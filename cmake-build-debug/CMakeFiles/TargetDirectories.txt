@@ -1,0 +1,3 @@
+/home/anne/Desktop/RM/armor/cmake-build-debug/CMakeFiles/armor.dir
+/home/anne/Desktop/RM/armor/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/anne/Desktop/RM/armor/cmake-build-debug/CMakeFiles/rebuild_cache.dir
