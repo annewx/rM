@@ -38,6 +38,7 @@ bool serial::open(){
             serial_detect->serData = data;
             sp_ret = open();
         } else {
+            serial_detect->list = 0;
             if(serial_detect->list != 0){
                 data = "A";
                 data += "Y";
