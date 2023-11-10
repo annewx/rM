@@ -65,6 +65,7 @@
 
             detector.pre = video.clone();
             detector.findLightBar();
+            detector.number_image = video.clone();
             detector.numClassify(modelPath);
 
             for (auto &armor : detector.armorPoint) {
@@ -78,12 +79,12 @@
 
 
 //             在图像上显示或执行其他操作
-//            cv::namedWindow("Frame", cv::WINDOW_NORMAL);
-//            cv::resizeWindow("Frame", 800, 600); // 设置 "Frame" 窗口的大小为 800x600
+           cv::namedWindow("num", cv::WINDOW_NORMAL);
+           cv::resizeWindow("num", 800, 600); // 设置 "Frame" 窗口的大小为 800x600
 
             cv::namedWindow("pre", cv::WINDOW_NORMAL);
             cv::resizeWindow("pre", 800, 600);
-//            cv::imshow("Frame", detector.img);
+           cv::imshow("Frame", detector.number_image);
             cv::imshow("pre",detector.pre);
             cv::waitKey(10);  // 显示图像并等待按键
 
