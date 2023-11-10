@@ -38,7 +38,7 @@ bool serial::open(){
             serial_detect->serData = data;
             sp_ret = open();
         } else {
-            serial_detect->list = 0;
+            
             if(serial_detect->list != 0){
                 data = "A";
                 data += "Y";
@@ -55,7 +55,6 @@ bool serial::open(){
                 sp_blocking_write(serPort, data.c_str(), 19, 0);
                 serial_detect->serData = data;
                 cout<<data<<endl;
-                data = "AY+000.00P+000.00NE";
             }
             else{
                 data = "AY+000.00P+000.00NE";
