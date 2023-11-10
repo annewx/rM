@@ -48,7 +48,7 @@
         hikCam.SetPixelFormat(173011514);
         hikCam.SetExposureTime(5000);
         hikCam.SetGAIN(10.0);
-        hikCam.SetFrameRate(80);
+        hikCam.SetFrameRate(120);
         hikCam.SetStreamOn();
         string  CamFPS = to_string(hikCam.GetFrameRate());
         cout<<"CamFPS"+ CamFPS<<endl;
