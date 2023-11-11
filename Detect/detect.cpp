@@ -28,7 +28,7 @@ void detect::imgProcess(){
     else{
         imgGray = channels.at(2) - channels.at(0);
     }
-    int value = 180;
+    int value = 200;
     threshold(imgGray,img,value,255,0);
     Mat kernel = getStructuringElement(MORPH_ELLIPSE,Size(3,3),Point(-1,-1));
     morphologyEx(img,pre,MORPH_OPEN,kernel);
@@ -177,13 +177,13 @@ void detect::numClassify(const std::string &model_path) {
             Scalar tempVal = cv::mean( number_image );
             cv::threshold(number_image, number_image, tempVal.val[0], 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
             number_image /=255.0;
-           double gama = 1.5;
-           cv::Mat lookUpTable(1, 256, CV_8U);
-           uchar* p = lookUpTable.ptr();
-           for (int i = 0; i < 256; i++) {
-               p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, gama) * 255.0);
-           }
-           cv::LUT(number_image, lookUpTable, number_image);
+ //          double gama = 1.5;
+ //          cv::Mat lookUpTable(1, 256, CV_8U);
+//      uchar* p = lookUpTable.ptr();
+//      for (int i = 0; i < 256; i++) {
+//           p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, gama) * 255.0);
+//          }
+//           cv::LUT(number_image, lookUpTable, number_image);
             cv::dnn::blobFromImage(number_image, blob, 1., cv::Size(28, 20));
             cv::dnn::Net net_ = cv::dnn::readNetFromONNX(model_path);
             net_.setInput(blob);
