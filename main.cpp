@@ -32,40 +32,40 @@
 
         detector.readVideo(videoPath);  // 读取视频
 
-//        while (true) {
-//            cv::Mat frame;
-//            detector.video >> frame;  // 从视频中读取一帧图像
+        while (true) {
+            cv::Mat frame;
+            detector.video >> frame;  // 从视频中读取一帧图像
+
+            if (frame.empty()) {
+                // 视频结束或读取失败，退出循环
+                break;
+            }
+
+//        Mat video;
 //
-//            if (frame.empty()) {
-//                // 视频结束或读取失败，退出循环
-//                break;
-//            }
-
-        Mat video;
-
-        if(hikCam.StartDevice(0) != 0) return false;
-        hikCam.SetResolution(1289,1024);
-        hikCam.SetPixelFormat(173011514);
-        hikCam.SetExposureTime(5000);
-        hikCam.SetGAIN(10.0);
-        hikCam.SetFrameRate(120);
-        hikCam.SetStreamOn();
-        string  CamFPS = to_string(hikCam.GetFrameRate());
-        cout<<"CamFPS"+ CamFPS<<endl;
-        while(true)
-        {
-            hikCam.GetMat(video);
+//        if(hikCam.StartDevice(0) != 0) return false;
+//        hikCam.SetResolution(1289,1024);
+//        hikCam.SetPixelFormat(173011514);
+//        hikCam.SetExposureTime(5000);
+//        hikCam.SetGAIN(10.0);
+//        hikCam.SetFrameRate(120);
+//        hikCam.SetStreamOn();
+//        string  CamFPS = to_string(hikCam.GetFrameRate());
+//        cout<<"CamFPS"+ CamFPS<<endl;
+//        while(true)
+//        {
+//            hikCam.GetMat(video);
 
 
 
 
 
-            detector.img = video.clone();
+            detector.img = frame.clone();
             detector.imgProcess();
 
-            detector.pre = video.clone();
+            detector.pre = frame.clone();
             detector.findLightBar();
-            detector.number_image = video.clone();
+
             detector.numClassify(modelPath);
 
             for (auto &armor : detector.armorPoint) {
@@ -79,13 +79,16 @@
 
 
 //             在图像上显示或执行其他操作
-           cv::namedWindow("num", cv::WINDOW_NORMAL);
-           cv::resizeWindow("num", 800, 600); // 设置 "Frame" 窗口的大小为 800x600
 
             cv::namedWindow("pre", cv::WINDOW_NORMAL);
             cv::resizeWindow("pre", 800, 600);
-           cv::imshow("Frame", detector.number_image);
+
+            cv::namedWindow("img",cv::WINDOW_NORMAL);
+            cv::resizeWindow("img",800,600);
+
+
             cv::imshow("pre",detector.pre);
+            cv::imshow("img",detector.img);
             cv::waitKey(10);  // 显示图像并等待按键
 
 

@@ -41,6 +41,7 @@ public:
     cv::Mat softmax_prob;
     cv::Mat blob;
     cv::Mat number_image;
+    cv::Mat num;
     std::vector<cv::RotatedRect> lightPoint;
     std::vector<cv::RotatedRect> light;
     std::vector<armor> armorPoint;

@@ -20,14 +20,14 @@ void detect::imgProcess(){
 
     vector<Mat> channels;
     split(img,channels);
-
     Mat imgGray;
-    if(enemyColor =="blue"){
-        imgGray = channels.at(0) - channels.at(2);
-    }
-    else{
-        imgGray = channels.at(2) - channels.at(0);
-    }
+    cvtColor(img, imgGray, COLOR_BGR2GRAY);
+//    if(enemyColor =="blue"){
+//        imgGray = channels.at(0) - channels.at(2);
+//    }
+//    else{
+//        imgGray = channels.at(2) - channels.at(0);
+//    }
     int value = 180;
     threshold(imgGray,img,value,255,0);
     Mat kernel = getStructuringElement(MORPH_ELLIPSE,Size(3,3),Point(-1,-1));
@@ -48,6 +48,15 @@ void detect::findLightBar() {
     for(int i = 0;i<contours.size();i++){
         bar[i] = minAreaRect(Mat(contours[i]));
         boundRect[i] = boundingRect(Mat(contours[i]));
+        cv::Scalar bgr;
+        bgr = cv::mean(img);
+        std::string lightColor;
+        lightColor = bgr.val[0]>bgr.val[1] ? "blue":"red";
+        if (lightColor!=enemyColor){
+            continue;
+
+        }
+
         vector<Point2f>::iterator center = find(centerPoint.begin(),centerPoint.end(),Point2f(bar[i].center.x,bar[i].center.y));
         if(center == centerPoint.end()){
             centerPoint.push_back(Point2f(bar[i].center.x,bar[i].center.y));
@@ -113,10 +122,10 @@ void detect::numClassify(const std::string &model_path) {
                 rect2[3] = pt;
             }
             if (Bar.center.x<light[i].center.x) {
-                left_bottom =   rect1[2] +rect1[2]/3 -rect1[1]/3;
-                left_top =      rect1[1] -rect1[2]/3 +rect1[1]/3;
-                right_bottom =  rect2[3] +rect2[3]/3 -rect2[0]/3;
-                right_top =     rect2[0] -rect2[3]/3 +rect2[0]/3;
+                left_bottom =   rect1[2] +rect1[2]/2 -rect1[1]/2;
+                left_top =      rect1[1] -rect1[2]/2 +rect1[1]/2;
+                right_bottom =  rect2[3] +rect2[3]/2 -rect2[0]/2;
+                right_top =     rect2[0] -rect2[3]/2 +rect2[0]/2;
             }
             else{
                 left_bottom=    rect2[2] +rect2[2]/2 -rect2[1]/2;
@@ -176,15 +185,16 @@ void detect::numClassify(const std::string &model_path) {
             cv::cvtColor(number_image, number_image, cv::COLOR_RGB2GRAY);
             Scalar tempVal = cv::mean( number_image );
             cv::threshold(number_image, number_image, tempVal.val[0], 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
-            number_image /=255.0;
-           double gama = 1.5;
-           cv::Mat lookUpTable(1, 256, CV_8U);
-           uchar* p = lookUpTable.ptr();
-           for (int i = 0; i < 256; i++) {
-               p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, gama) * 255.0);
-           }
-           cv::LUT(number_image, lookUpTable, number_image);
-            cv::dnn::blobFromImage(number_image, blob, 1., cv::Size(28, 20));
+            num = number_image /255.0;
+
+//           double gama = 0.8;
+//           cv::Mat lookUpTable(1, 256, CV_8U);
+//           uchar* p = lookUpTable.ptr();
+//           for (int i = 0; i < 256; i++) {
+//               p[i] = cv::saturate_cast<uchar>(pow(i / 255.0, gama) * 255.0);
+//           }
+//           cv::LUT(number_image, lookUpTable, number_image);
+            cv::dnn::blobFromImage(num, blob, 1, cv::Size(28, 20));
             cv::dnn::Net net_ = cv::dnn::readNetFromONNX(model_path);
             net_.setInput(blob);
             cv::Mat outputs = net_.forward();
@@ -207,7 +217,7 @@ void detect::numClassify(const std::string &model_path) {
             else{
                 armorClass.armor_type = "SMALL";
             }
-            if(confidence > 0.5 and numClasses[label_id]!="Negative" and numClasses[label_id]!="Outpost"){
+            if(confidence > 0 and numClasses[label_id]!="Negative"){
                 armorClass.left_top = left_top;
                 armorClass.left_bottom = left_bottom;
                 armorClass.right_top = right_top;
